@@ -1,0 +1,42 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+input {
+  margin: 0 10px;
+  padding: 8px;
+}
+
+button {
+  margin: 10px;
+  padding: 10px;
+}
+
+select {
+  margin: 10px;
+  padding: 8px;
+}
+
+.todo-form {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+.todo-form div {
+  margin-bottom: 10px;
+}
+
+button[type="button"] {
+  background-color: red;
+  color: white;
+}
+
+button[type="submit"] {
+  background-color: green;
+  color: white;
+}

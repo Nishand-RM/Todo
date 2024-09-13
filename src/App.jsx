@@ -1,63 +1,73 @@
-import React, { Component } from 'react';
-import ProductList from './components/ProductList';
-import Cart from './components/Cart';
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState } from 'react';
+import TodoList from './components/TodoList';
 
-const products = [
-  { id: 1, name: 'Product 1', description: 'Popular Item', price: '$20', image: 'https://via.placeholder.com/150',category: 'Popular', rating: 4  },
-  { id: 2, name: 'Product 2', description: 'Special Item', price: '$30', image: 'https://via.placeholder.com/150' },
-  { id: 3, name: 'Product 3', description: 'Popular Item', price: '$25', image: 'https://via.placeholder.com/150',category: 'Popular', rating: 3  },
-  { id: 4, name: 'Product 4', description: 'Special Item', price: '$40', image: 'https://via.placeholder.com/150' },
-  { id: 5, name: 'Product 5', description: 'Popular Item', price: '$15', image: 'https://via.placeholder.com/150',category: 'Popular', rating: 4  },
-  { id: 6, name: 'Product 6', description: 'Special Item', price: '$35', image: 'https://via.placeholder.com/150' },
-  { id: 7, name: 'Product 7', description: 'Popular Item', price: '$50', image: 'https://via.placeholder.com/150' ,category: 'Popular', rating: 5 },
-  { id: 8, name: 'Product 8', description: 'Special Item', price: '$45', image: 'https://via.placeholder.com/150' },
-  
+function App() {
+  const [todoName, setTodoName] = useState('');
+  const [todoDescription, setTodoDescription] = useState('');
+  const [todos, setTodos] = useState([]);
+  const [filter, setFilter] = useState('all');
 
-];
-
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      cartItems: [],
-    };
-  }
-
-  addToCart = (product) => {
-    this.setState(prevState => ({
-      cartItems: [...prevState.cartItems, product]
-    }));
+  const handleAddTodo = () => {
+    if (todoName && todoDescription) {
+      setTodos([...todos, {
+        taskName: todoName,
+        description: todoDescription,
+        status: 'not completed',
+        id: Date.now()
+      }]);
+      setTodoName('');
+      setTodoDescription('');
+    }
   };
 
-  removeFromCart = (product) => {
-    this.setState(prevState => ({
-      cartItems: prevState.cartItems.filter(item => item.id !== product.id)
-    }));
+  const updateTodo = (id, updatedTask) => {
+    setTodos(todos.map(todo => todo.id === id ? updatedTask : todo));
   };
 
-  render() {
-    const cartItemCount = this.state.cartItems.length;
+  const deleteTodo = (id) => {
+    setTodos(todos.filter(todo => todo.id !== id));
+  };
 
-    return (
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+  };
+
+  const filteredTodos = todos.filter(todo => {
+    if (filter === 'all') return true;
+    return todo.status === filter;
+  });
+
+  return (
+    <div className="container">
+      <h1>Create a Todo</h1>
       <div>
-        <header className="header">
-          <h1>Shop in Style</h1>
-          <p>With this shop homepage template</p>
-          <Cart cartItemCount={cartItemCount} />
-        </header>
-        <main>
-          <ProductList
-            products={products}
-            onAdd={this.addToCart}
-            onRemove={this.removeFromCart}
-            cartItems={this.state.cartItems}
-          />
-        </main>
+        <input
+          type="text"
+          value={todoName}
+          placeholder="Todo Name"
+          onChange={(e) => setTodoName(e.target.value)}
+        />
+        <input
+          type="text"
+          value={todoDescription}
+          placeholder="Todo Description"
+          onChange={(e) => setTodoDescription(e.target.value)}
+        />
+        <button onClick={handleAddTodo}>Add Todo</button>
+        <select onChange={handleFilterChange} value={filter}>
+          <option value="all">All</option>
+          <option value="completed">Completed</option>
+          <option value="not completed">Not Completed</option>
+        </select>
       </div>
-    );
-  }
+      <TodoList
+        todos={filteredTodos}
+        updateTodo={updateTodo}
+        deleteTodo={deleteTodo}
+      />
+    </div>
+  );
 }
 
 export default App;
+
